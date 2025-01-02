@@ -1,6 +1,7 @@
-//importing http module and dotenv for environment variables
+//importing the HTTP module, dotenv for environment variables, and database configuration
 const http = require("http");
 require("dotenv").config();
+require("./src/db/db");
 
 //retrieving hostname and port from environment variables
 const hostname = process.env.HOSTNAME;
