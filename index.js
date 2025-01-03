@@ -1,20 +1,25 @@
-//importing the HTTP module, dotenv for environment variables, and database configuration
+//import modules: HTTP, express, cors, dotenv, and user routes
 const http = require("http");
+const express = require("express");
+const cors = require("cors");
 require("dotenv").config();
-require("./src/db/db");
+const users = require("./src/routes/user");
 
-//retrieving hostname and port from environment variables
-const hostname = process.env.HOSTNAME;
+//retrieve port from environment variables
 const port = process.env.PORT;
 
-//creating and configuring the HTTP server
-const server = http.createServer((req, res) => {
-  res.statusCode = 200; //set HTTP status to 200 (OK)
-  res.setHeader("content-type", "text/html"); //set the response content type to HTML
-  res.end("HELLO, WORLD!\n"); //send response message
-});
+//initialize express app
+const app = express();
 
-//starting the server on the specified hostname and port
-server.listen(port, hostname, () => {
-  console.log(`server running at http://${hostname}:${port}/`);
+//enable CORS for cross-origin requests
+app.use(cors());
+//parse incoming JSON requests
+app.use(express.json());
+
+//set up user routes with /api/users/ endpoint
+app.use("/api/users", users);
+
+//start server and listen on specified port
+app.listen(port, () => {
+  console.log(`server listening on port ${port}`);
 });

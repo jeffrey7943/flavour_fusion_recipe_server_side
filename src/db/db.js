@@ -13,20 +13,26 @@ const client = new MongoClient(uri, {
   },
 });
 
+//async function to establish a connection to mongodb
 async function run() {
   try {
-    //connect to the mongodb server
+    //connect to the mongodb client
     await client.connect();
     //send a ping command to verify the connection
     await client.db("admin").command({ ping: 1 });
     console.log(
       "pinged your deployment. you successfully connected to mongodb!"
     );
-  } finally {
-    //close the client connection
-    await client.close();
+  } catch (error) {
+    //log any connection error
+    console.error(error);
   }
 }
 
-//run the async function and handle errors
-run().catch(console.dir);
+//call the function to initiate the connection
+run();
+//access the flavour_fusion_recipe database
+const db = client.db("flavour_fusion_recipe");
+
+//export the database object for use in other modules
+module.exports = db;
