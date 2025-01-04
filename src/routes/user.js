@@ -1,10 +1,15 @@
-//import express, mongodb objectid, and database instance
+//import express, mongodb objectid, bcrypt, and database instance
 const express = require("express");
 const { ObjectId } = require("mongodb");
+const bcrypt = require("bcrypt");
 const db = require("../db/db");
 
 //create a new express router
 const router = express.Router();
+//define the number of salt rounds for bcrypt hashing
+const salt_rounds = 10;
+//generate a salt using the specified number of rounds
+const salt = bcrypt.genSalt(salt_rounds);
 
 //GET endpoint to fetch all users
 router.get("/", async (req, res) => {
@@ -26,12 +31,18 @@ router.get("/:id", async (req, res) => {
 
 //POST endpoint to create a new user
 router.post("/create", async (req, res) => {
+  const password = req.body.password;
+  //hash the provided password using the generated salt and convert salt rounds into an integer
+  const hashed_password = await bcrypt.hash(password, parseInt(salt));
   try {
     const new_document = {
+      profile_picture:
+        "https://res.cloudinary.com/de74jeqj6/image/upload/v1735994287/PROFILE_PICTURE_PLACEHOLDER__1_lmsadi.webp",
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       email: req.body.email,
-      password: req.body.password,
+      password: hashed_password,
+      admin: false,
     };
     const collection = await db.collection("users");
     const result = await collection.insertOne(new_document);
