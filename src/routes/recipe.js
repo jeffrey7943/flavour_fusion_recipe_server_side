@@ -27,3 +27,5 @@ router.get("/:id", async (req, res) => {
     res.send("not found").status(404); //respond with 404 if not found
   else res.send(result).status(200); //respond with user data if found
 });
+
+module.exports = router();
